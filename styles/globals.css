@@ -79,6 +79,11 @@
     align-items: center;
 }
 
+.flexCenterModer {
+    display: flex;
+    justify-content: center;
+}
+
 .flexBetween {
     display: flex;
     justify-content: space-between;

@@ -45,6 +45,7 @@ module.exports = {
       },
       spacing: {
         65: '65px',
+        69: '69px',
       },
       flex: {
         2: '2 2 0%',

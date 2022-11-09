@@ -74,10 +74,10 @@ const Navbar = () => {
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b
-    dark:bg-nft-dark
-    bg-white
-    dark:border-nft-black-1
-    border-nft-gray-1"
+dark:bg-nft-dark
+bg-white
+dark:border-nft-black-1
+border-nft-gray-1"
     >
       <div className="flex flex-1 flex-row justify-start">
         <Link href="/">
@@ -148,7 +148,7 @@ const Navbar = () => {
               height={25}
               alt="menu"
               onClick={() => setIsOpen(true)}
-              className={theme === 'light' && 'filter invert'} // Change color of burger menu
+              className={theme === 'light' && 'filter invert'}
             />
           )}
         {isOpen && (
