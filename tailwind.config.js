@@ -21,6 +21,7 @@ module.exports = {
         'file-accept': '#00e676',
         'file-reject': '#ff1744',
         'overlay-black': 'rgba(0, 0, 0, 0.8)',
+        'success-color': '#eb1484',
       },
       width: {
         215: '215px',
@@ -34,6 +35,9 @@ module.exports = {
         240: '240px',
         256: '256px',
         327: '327px',
+      },
+      minHeight: {
+        '3/4': '75%',
       },
       height: {
         300: '300px',

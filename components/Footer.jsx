@@ -54,16 +54,18 @@ const Footer = () => {
         <div className="flexBetween flex-row w-full minmd:w-4/5 sm:flex-col mt-7">
           <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base">Hardcoregor. All Rights Reserverd.</p>
           <div className="flex flex-row sm:mt-4">
-            {[images.instagram, images.twitter, images.telegram, images.discord].map((image, index) => (
+            {[images.instagram, images.twitter, images.telegram].map((image, index) => (
               <div className="mx-2 cursor-pointer" key={index}>
-                <Image
-                  src={image}
-                  objectFit="contain"
-                  width={24}
-                  height={24}
-                  alt="social"
-                  className={theme === 'light' && 'filter invert'}
-                />
+                <Link href="/">
+                  <Image
+                    src={image}
+                    objectFit="contain"
+                    width={24}
+                    height={24}
+                    alt="social"
+                    className={theme === 'light' ? 'filter invert' : ''}
+                  />
+                </Link>
               </div>
             ))}
           </div>
