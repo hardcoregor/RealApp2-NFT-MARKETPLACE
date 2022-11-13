@@ -1,5 +1,8 @@
 .secret
-.secrets.json
+.secret1
+.secret2
+.secret3
+secrets.js
 
 node_modules
 

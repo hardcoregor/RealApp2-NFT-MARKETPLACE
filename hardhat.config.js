@@ -1,22 +1,15 @@
-// const fs = require('fs');
-// require('@nomiclabs/hardhat-waffle');
-
-// const privateKey = fs.readFileSync('.secret').toString().trim();
-
-// module.exports = {
-//   networks: {
-//     hardhat: {
-//       chainId: 1337,
-//     },
-//   },
-//   solidity: '0.8.4',
-// };
-
 require('@nomicfoundation/hardhat-toolbox');
-require("@nomicfoundation/hardhat-chai-matchers");
-require("@nomiclabs/hardhat-ethers");
+require('@nomicfoundation/hardhat-chai-matchers');
+require('@nomiclabs/hardhat-ethers');
 
+const fs = require('fs');
 
+const privateKey = fs.readFileSync('.secret').toString().trim();
+const privateApi = fs.readFileSync('.secret1').toString().trim();
+
+const ALCHEMY_API_KEY = privateApi;
+
+const GOERLI_PRIVATE_KEY = privateKey;
 
 module.exports = {
   solidity: '0.8.9',

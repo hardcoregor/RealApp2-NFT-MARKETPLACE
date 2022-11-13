@@ -4,20 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "set \"CI=false\" && react-scripts build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@openzeppelin/contracts": "4.5.0",
     "axios": "0.26.0",
     "element-ui": "^2.15.10",
+    "fs": "^0.0.1-security",
     "ipfs-http-client": "56.0.1",
+    "ipfs-utils": "^9.0.7",
     "next": "12.1.0",
     "next-themes": "0.1.1",
+    "process": "^0.11.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-dropzone": "12.0.4",
+    "web3": "^1.8.1",
     "web3modal": "1.9.5"
   },
   "devDependencies": {

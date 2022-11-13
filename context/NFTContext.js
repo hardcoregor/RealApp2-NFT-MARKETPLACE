@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import Web3 from 'web3';
 import axios from 'axios';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
+import { API, projectIdSec, projectSecretS } from '../secrets';
 
 import { MarketAddress, MarketAddressABI } from './constants';
 
-
+const projectId = projectIdSec;
+const projectSecret = projectSecretS;
 
 const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString('base64')}`;
 
@@ -25,11 +28,13 @@ export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState('');
+  const [network, setNetwork] = useState(false);
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
+  const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(false);
   const nftCurrency = 'ETH';
 
   const checkWalletIsConnected = async () => {
-    if (!window.ethereum) return alert('Please install MetaMask');
+    if (!window.ethereum) return console.log('Please install MetaMask for using our NFT platform!');
 
     const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 
@@ -45,7 +50,7 @@ export const NFTProvider = ({ children }) => {
   }, []);
 
   const connectWallet = async () => {
-    if (!window.ethereum) return alert('Please install MetaMask');
+    if (!window.ethereum) return console.log('Please install MetaMask for using our NFT platform!');
 
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
@@ -53,6 +58,49 @@ export const NFTProvider = ({ children }) => {
 
     window.location.reload();
   };
+
+  useEffect(async () => { // INITIATE CONNECTION METAMASK
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    if (provider) {
+      setIsMetaMaskInstalled(true);
+    }
+  }, []);
+
+  const chainId = 5;
+
+  const checkNetwork = async () => {
+    const web3 = new Web3();
+    if (window.ethereum.networkVersion !== chainId) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: web3.utils.toHex(chainId) }],
+        });
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: 'Polygon Mainnet',
+                chainId: web3.utils.toHex(chainId),
+                nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
+                rpcUrls: ['https://goerli.infura.io/v3/'],
+              },
+            ],
+          });
+        }
+      }
+    }
+    setNetwork(true);
+  };
+
+  useEffect(() => {
+    checkNetwork();
+  }, [connectWallet, checkWalletIsConnected]);
 
   const uploadToIPFS = async (file) => {
     try {
@@ -109,7 +157,10 @@ export const NFTProvider = ({ children }) => {
   const fetchNFTs = async () => {
     setIsLoadingNFT(false);
 
-    const provider = new ethers.providers.JsonRpcProvider();
+    const provider = new ethers.providers.JsonRpcProvider(
+      `https://eth-goerli.g.alchemy.com/v2/${API}`,
+      5,
+    );
     const contract = fetchContract(provider);
 
     const data = await contract.fetchMarketItems();
@@ -184,7 +235,7 @@ export const NFTProvider = ({ children }) => {
   };
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, setIsLoadingNFT }}>
+    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, setIsLoadingNFT, network, isMetaMaskInstalled }}>
       {children}
     </NFTContext.Provider>
   );

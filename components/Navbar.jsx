@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext, setIsOpen } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+import web3 from 'web3';
 
 import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
@@ -29,6 +30,7 @@ const MenuItems = ({ isMobile, active, setActive }) => {
             setActive(item);
 
             if (isMobile) {
+              // eslint-disable-next-line no-undef
               setIsOpen(false);
             }
           }}
@@ -48,28 +50,48 @@ const MenuItems = ({ isMobile, active, setActive }) => {
   );
 };
 
+// eslint-disable-next-line no-shadow
 const ButtonGroup = ({ setActive, router, isMobile, setIsOpen }) => {
-  const { connectWallet, currentAccount } = useContext(NFTContext);
+  const { connectWallet, currentAccount, network, isMetaMaskInstalled } = useContext(NFTContext);
 
-  return currentAccount ? (
-    <Button
-      btnName="Create"
-      classStyles={isMobile ? 'mx-2 rounded-xl text-2xl' : 'mx-2 rounded-xl'}
-      handleClick={() => {
-        setActive('');
-        if (isMobile) {
-          setIsOpen(false);
-        }
-        router.push('/create-nft');
-      }}
-    />
+  return isMetaMaskInstalled ? (currentAccount ? (
+    network ? (
+      <Button
+        btnName="Create"
+        classStyles={isMobile ? 'mx-2 rounded-xl text-2xl' : 'mx-2 rounded-xl'}
+        handleClick={() => {
+          setActive('');
+          if (isMobile) {
+            setIsOpen(false);
+          }
+          router.push('/create-nft');
+        }}
+      />
+    ) : (
+      <Button
+        btnName="SWITCH TO GOERLI"
+        classStyles={isMobile ? 'mx-2 rounded-xl text-2xl' : 'mx-2 rounded-xl'}
+        handleClick={() => {
+          setActive('');
+          if (isMobile) {
+            setIsOpen(false);
+          }
+          router.push('/create-nft');
+        }}
+      />
+    )
   ) : (
     <Button
       btnName="Connect"
       classStyles={isMobile ? 'mx-2 rounded-xl text-2xl' : 'mx-2 rounded-xl'}
       handleClick={connectWallet}
     />
-  );
+  ))
+    : (
+      <div className="items-center bg-success-color rounded-xl py-2 text-sm">
+        <a className="minlg:text-lg px-6 minlg:px-8 font-poppins font-semibold text-white" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="blank">Install MetaMask</a>
+      </div>
+    );
 };
 
 const checkActive = (active, setActive, router) => {
@@ -96,7 +118,19 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [active, setActive] = useState('Explore NFTs');
+  // eslint-disable-next-line no-shadow
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => { // REFRESH EVERY TIME WHEN CHANGE CHAIN OR WALLET
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
+      window.ethereum.on('accountsChanged', () => {
+        window.location.reload();
+      });
+    }
+  }, []);
 
   useEffect(() => {
     setTheme('dark');
